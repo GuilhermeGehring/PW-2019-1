@@ -49,7 +49,8 @@ public class Equipamento implements Serializable {
     
     @NotNull(message = "A marca deve ser informada")
     @ManyToOne
-    @JoinColumn(name = "marca", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "marca", referencedColumnName = "id", nullable = false,
+            foreignKey = @ForeignKey(name = "fk_equipamento_marca"))
     private Marca marca;
 
     public Equipamento() {

@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -26,9 +27,9 @@ import org.hibernate.validator.constraints.NotBlank;
  * @author 20171pf.cc0178
  */
 @Entity
-@Table(name = "arquivo")
-public class Arquivo implements Serializable {
-
+@Table(name = "foto")
+public class Foto implements Serializable{
+    
     @Id
     @SequenceGenerator(name = "seq_arquivo", sequenceName = "seq_arquivo_id", 
             allocationSize = 1)
@@ -46,18 +47,19 @@ public class Arquivo implements Serializable {
     @Lob
     private Byte arquivo[];
     
-    @NotNull(message = "O nome do arquivo não pode ser nulo")
-    @Length(max = 50, message = "O nome do arquivo não pode ter mais que {max} caracteres")
-    @NotBlank(message = "O nome do arquivo não pode ser em branco")
-    @Column(name = "nome_arquivo", nullable = false, length = 50)
-    private String nomeArquivo;
+    @NotNull(message = "O nome da foto não pode ser nula")
+    @Length(max = 50, message = "O nome da foto não pode ter mais que {max} caracteres")
+    @NotBlank(message = "O nome da foto não pode ser em branco")
+    @Column(name = "nome_foto", nullable = false, length = 50)
+    private String nomeFoto;
     
-    @NotNull(message = "O produto deve ser informado")
+    @NotNull(message = "A ordem do serviço deve ser informado")
     @ManyToOne
-    @JoinColumn(name = "produto", referencedColumnName = "id", nullable = false)
-    private Produto produto;
+    @JoinColumn(name = "ordem_servico", referencedColumnName = "id", nullable = false,
+            foreignKey = @ForeignKey(name = "fk_foto_os"))
+    private OrdemServico ordemServico;
 
-    public Arquivo() {
+    public Foto() {
     }
 
     public Integer getId() {
@@ -84,18 +86,26 @@ public class Arquivo implements Serializable {
         this.arquivo = arquivo;
     }
 
-    public String getNomeArquivo() {
-        return nomeArquivo;
+    public String getNomeFoto() {
+        return nomeFoto;
     }
 
-    public void setNomeArquivo(String nomeArquivo) {
-        this.nomeArquivo = nomeArquivo;
+    public void setNomeFoto(String nomeFoto) {
+        this.nomeFoto = nomeFoto;
+    }
+
+    public OrdemServico getOrdemServico() {
+        return ordemServico;
+    }
+
+    public void setOrdemServico(OrdemServico ordemServico) {
+        this.ordemServico = ordemServico;
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 83 * hash + Objects.hashCode(this.id);
+        hash = 59 * hash + Objects.hashCode(this.id);
         return hash;
     }
 
@@ -110,11 +120,11 @@ public class Arquivo implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Arquivo other = (Arquivo) obj;
+        final Foto other = (Foto) obj;
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }
         return true;
     }
-    
+        
 }
