@@ -8,14 +8,19 @@ package br.edu.ifsul.modelo;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Objects;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -30,7 +35,7 @@ import org.hibernate.validator.constraints.NotBlank;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 
-@Table(name = "Usuario")
+@Table(name = "usuario")
 @DiscriminatorColumn(name = "tipo", discriminatorType = DiscriminatorType.STRING,
         length = 2)
 @DiscriminatorValue(value = "US")
@@ -70,6 +75,15 @@ public class Usuario implements Serializable {
     @Length(max = 14, message = "O telefone alternativo não pode ter mais que {max} caracteres")
     @Column(name = "telefone_alternativo", length = 14)
     private String telefoneAlternativo;
+    
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "permissões",
+            joinColumns = 
+                @JoinColumn(name = "nome_usuario", referencedColumnName = "nome_usuario", nullable = false),
+            inverseJoinColumns =
+                @JoinColumn(name = "permissao", referencedColumnName = "nome", nullable = false)
+    )
+    private Set<Permissao> permissoes; //associação bidirecional
 
     public Usuario() {
         this.dataCadastro = Calendar.getInstance();
@@ -130,7 +144,7 @@ public class Usuario implements Serializable {
     public void setTelefoneAlternativo(String telefoneAlternativo) {
         this.telefoneAlternativo = telefoneAlternativo;
     }
-
+        
     @Override
     public int hashCode() {
         int hash = 3;
@@ -158,6 +172,14 @@ public class Usuario implements Serializable {
 
     public void setBairro(String centro) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public Set<Permissao> getPermissoes() {
+        return permissoes;
+    }
+
+    public void setPermissoes(Set<Permissao> permissoes) {
+        this.permissoes = permissoes;
     }
 
 }

@@ -28,11 +28,13 @@ public class Estado implements Serializable {
             allocationSize = 1)
     @GeneratedValue(generator = "seq_estado", strategy = GenerationType.SEQUENCE)
     private Integer id;
+    
     @NotNull(message = "O nome não pode ser nulo")
     @Length(max = 50, message = "O nome não pode ter mais que {max} caracteres")
     @NotBlank(message = "O nome não pode ser em branco")
     @Column(name = "nome", nullable = false, length = 50)
     private String nome;
+    
     @NotNull(message = "A UF não pode ser nula")
     @Length(min = 2, max = 2, message = "A UF deve ter {max} caracteres")
     @NotBlank(message = "A UF não pode ser em branco")

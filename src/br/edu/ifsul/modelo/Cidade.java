@@ -28,13 +28,15 @@ public class Cidade implements Serializable {
     @Id
     @SequenceGenerator(name = "seq_cidade", sequenceName = "seq_id_cidade", 
             allocationSize = 1)
-    @GeneratedValue(generator = "seq_cidade", strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(generator = "seq_cidade", strategy = GenerationType.SEQUENCE)    
     private Integer id;
+    
     @NotNull(message = "O nome não pode ser nulo")
     @NotBlank(message = "O nome não pode ser em branco")
     @Length(max = 50, message = "O nome não pode ter mais que {max} caracteres")
-    @Column(name = "nome", nullable = false, length = 50)
+    @Column(name = "nome", nullable = false, length = 50)    
     private String nome;
+    
     @ManyToOne
     @JoinColumn(name = "estado", referencedColumnName = "id", nullable = false)
     private Estado estado;
