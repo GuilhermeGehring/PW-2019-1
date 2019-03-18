@@ -44,7 +44,7 @@ public class Arquivo implements Serializable {
     @NotNull(message = "O arquivo deve ser informado")
     @Column(name = "arquivo", nullable = false)
     @Lob
-    private Byte arquivo[];
+    private byte arquivo[];
     
     @NotNull(message = "O nome do arquivo não pode ser nulo")
     @Length(max = 50, message = "O nome do arquivo não pode ter mais que {max} caracteres")
@@ -76,11 +76,11 @@ public class Arquivo implements Serializable {
         this.descricao = descricao;
     }
 
-    public Byte[] getArquivo() {
+    public byte[] getArquivo() {
         return arquivo;
     }
 
-    public void setArquivo(Byte[] arquivo) {
+    public void setArquivo(byte[] arquivo) {
         this.arquivo = arquivo;
     }
 
@@ -115,6 +115,14 @@ public class Arquivo implements Serializable {
             return false;
         }
         return true;
+    }
+
+    public Produto getProduto() {
+        return produto;
+    }
+
+    public void setProduto(Produto produto) {
+        this.produto = produto;
     }
     
 }

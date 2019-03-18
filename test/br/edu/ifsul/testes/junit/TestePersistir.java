@@ -23,6 +23,10 @@ import br.edu.ifsul.modelo.Produto;
 import br.edu.ifsul.modelo.Servico;
 import br.edu.ifsul.modelo.Status;
 import br.edu.ifsul.modelo.Usuario;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Calendar;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -57,7 +61,7 @@ public class TestePersistir {
     }
 
     @Test
-    public void teste() {
+    public void teste() throws IOException {
         Estado e = new Estado();
         e.setNome("Rio Grande do Sul");
         e.setUf("RS");
@@ -68,7 +72,7 @@ public class TestePersistir {
 
         Permissao p = new Permissao();
         p.setNome("Administrador");
-        p.setDescricao("Administrador do sistema, com todas as permissãoes");
+        p.setDescricao("Administrador do sistema, com todas as permissões");
 
         PessoaFisica pf = new PessoaFisica();
         pf.setEmail("guilherme.gehring@gmail.com");
@@ -99,34 +103,7 @@ public class TestePersistir {
         Servico s = new Servico();
         s.setNome("Serviço 1");
         s.setValor(50.00);
-
-        ItemServico is = new ItemServico();
-        is.setQuantidade(3);
-        is.setValorUnitario(10.30);
-        is.setValorTotal(is.getValorUnitario() * is.getQuantidade());
-
-        Arquivo a = new Arquivo();
-        a.setDescricao("Descrição de produto");
-        a.setArquivo(arquivo);
-        a.setNomeArquivo("arq2.pdf");
-
-        Produto pr = new Produto();
-        pr.setNome("monitor");
-        pr.setDescricao("21' Full HD");
-        pr.setPreco(600.00);
-        pr.setMarca(m);
-        pr.setArquivos(arquivos);
-
-        ItemProduto it = new ItemProduto();
-        it.setQuantidade(3);
-        it.setValorUnitario(200.00);
-        it.setValorTotal(it.getValorUnitario() * it.getQuantidade());
-
-        Foto f = new Foto();
-        f.setDescricao("Foto do monitor");
-        f.setArquivo(arquivo);
-        f.setNomeFoto("img.jpg");
-
+        
         OrdemServico os = new OrdemServico();
         os.setDataAbertura(Calendar.getInstance());
         os.setDataFechamento(Calendar.getInstance());
@@ -136,13 +113,51 @@ public class TestePersistir {
         os.setValorServicos(80.00);
         os.setValorTotal(990.00);
         os.setStatus(Status.FECHADA);
-        os.setFormaPagamento(FormaPagamento.AVISTA);
-        os.setQuantidadeParcelas(1);
-        os.setItemProdutos(itemProdutos);
-        os.setItemServico(ItemServico);
-        os.setFoto(foto);
+        os.setFormaPagamento(FormaPagamento.APRAZO);
+        os.setQuantidadeParcelas(3);
+        os.setEquipamento(eq);
+        os.setPessoaFisica(pf);
+        os.setUsuario(pf);
+        os.gerarContasReceber();
+        
+        //os.setItemProdutos(itemProdutos);
+        //os.setItemServico(ItemServico);
+        //os.setFoto(foto);
 
-        ContaReceberID cri = new ContaReceberID();
+        ItemServico is = new ItemServico();
+        is.setQuantidade(3);
+        is.setValorUnitario(10.30);
+        is.setValorTotal(is.getValorUnitario() * is.getQuantidade());
+        is.setOrdemServico(os);
+        is.setServico(s);       
+
+        Produto pr = new Produto();
+        pr.setNome("monitor");
+        pr.setDescricao("21' Full HD");
+        pr.setPreco(600.00);
+        pr.setMarca(m);
+        
+        Arquivo a = new Arquivo();
+        a.setDescricao("Descrição de produto");
+        Path path = Paths.get("C:\\Users\\20171pf.cc0178\\Downloads\\tux.jpg");       
+        a.setArquivo(Files.readAllBytes(path));
+        a.setNomeArquivo("tux.jpeg");
+        a.setProduto(pr);
+
+        ItemProduto it = new ItemProduto();
+        it.setQuantidade(3);
+        it.setValorUnitario(200.00);
+        it.setValorTotal(it.getValorUnitario() * it.getQuantidade());
+        it.setOrdemServico(os);
+        it.setProduto(pr);
+
+        Foto f = new Foto();
+        f.setDescricao("Foto do monitor");        
+        f.setArquivo(Files.readAllBytes(path));
+        f.setNomeFoto("tux.jpeg");
+        f.setOrdemServico(os);
+
+        /*ContaReceberID cri = new ContaReceberID();
         cri.setNumeroParcela(1);
         cri.setOrdemServico(os);
 
@@ -151,7 +166,7 @@ public class TestePersistir {
         cr.setValor(990.00);
         cr.setVencimento(Calendar.getInstance());
         cr.setValorPago(990.00);
-        cr.setDataPagamento(Calendar.getInstance());
+        cr.setDataPagamento(Calendar.getInstance());*/
 
         em.getTransaction().begin();
         em.persist(e);
@@ -161,13 +176,13 @@ public class TestePersistir {
         em.persist(m);
         em.persist(eq);
         em.persist(s);
-        em.persist(is);
-        em.persist(a);
-        em.persist(pr);
-        em.persist(it);
-        em.persist(f);
         em.persist(os);
-        em.persist(cr);
+        em.persist(is);
+        em.persist(pr);
+        em.persist(a);        
+        em.persist(it);
+        em.persist(f);        
+        //em.persist(cr);
         em.getTransaction().commit();
     }
 

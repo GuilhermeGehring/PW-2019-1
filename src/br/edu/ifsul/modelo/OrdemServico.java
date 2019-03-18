@@ -6,6 +6,7 @@
 package br.edu.ifsul.modelo;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
@@ -26,6 +27,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.swing.JOptionPane;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotBlank;
@@ -126,9 +128,10 @@ public class OrdemServico implements Serializable {
     
     @OneToMany(mappedBy = "id.ordemServico", cascade = CascadeType.ALL,
             orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<ContaReceber> contasReceber; //composição, ou seja, arquivo não vive sem o produto. Arquivo por sua vez, referencia Produto. É bidirecional  
+    private List<ContaReceber> contasReceber; //composição, ou seja, arquivo não vive sem o produto. Arquivo por sua vez, referencia Produto. É bidirecional          
 
     public OrdemServico() {
+        contasReceber = new ArrayList<>();
     }
 
     public Integer getId() {
@@ -273,7 +276,7 @@ public class OrdemServico implements Serializable {
 
     public void setContasReceber(List<ContaReceber> contasReceber) {
         this.contasReceber = contasReceber;
-    }
+    }        
 
     @Override
     public int hashCode() {
@@ -300,4 +303,35 @@ public class OrdemServico implements Serializable {
         return true;
     }           
     
+    public void gerarContasReceber() {
+        if (this.getFormaPagamento() == FormaPagamento.AVISTA) {            
+            ContaReceber conta = new ContaReceber();
+            conta.setValor(this.valorTotal);
+            conta.setValorPago(this.valorTotal);
+            conta.setVencimento(this.dataFechamento);
+            conta.setDataPagamento(this.dataFechamento);
+            ContaReceberID id = new ContaReceberID();
+            id.setNumeroParcela(1);
+            id.setOrdemServico(this);
+            conta.setId(id);
+            conta.setOrdemServico(this);
+            this.getContasReceber().add(conta);
+        } else if (this.getFormaPagamento() == FormaPagamento.APRAZO) {
+            Double valorParcela = this.valorTotal / this.quantidadeParcelas;
+            for (int i = 1; i <= this.quantidadeParcelas; i++) {
+                ContaReceber conta = new ContaReceber();
+                conta.setValor(valorParcela);
+                conta.setValorPago(valorParcela);
+                conta.setVencimento(this.dataFechamento);
+                conta.setDataPagamento(this.dataFechamento);
+                ContaReceberID id = new ContaReceberID();
+                id.setNumeroParcela(i);
+                id.setOrdemServico(this);
+                conta.setId(id);
+                conta.setOrdemServico(this);
+                this.getContasReceber().add(conta);
+            }
+        }
+    }
+
 }

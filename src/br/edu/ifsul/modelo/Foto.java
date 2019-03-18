@@ -45,7 +45,7 @@ public class Foto implements Serializable{
     @NotNull(message = "O arquivo deve ser informado")
     @Column(name = "arquivo", nullable = false)
     @Lob
-    private Byte arquivo[];
+    private byte arquivo[];
     
     @NotNull(message = "O nome da foto não pode ser nula")
     @Length(max = 50, message = "O nome da foto não pode ter mais que {max} caracteres")
@@ -78,11 +78,11 @@ public class Foto implements Serializable{
         this.descricao = descricao;
     }
 
-    public Byte[] getArquivo() {
+    public byte[] getArquivo() {
         return arquivo;
     }
 
-    public void setArquivo(Byte[] arquivo) {
+    public void setArquivo(byte[] arquivo) {
         this.arquivo = arquivo;
     }
 
